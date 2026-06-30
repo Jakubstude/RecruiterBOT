@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>RecruiterBOT — Options</title>
+<style>
+  :root {
+    --primary:#0a66c2; --primary-dark:#084b8a; --bg:#f4f7fb;
+    --card:#fff; --line:#d8e3f2; --muted:#5f6b7a; --text:#1f2933;
+    --success:#1e8e4a; --danger:#c43636;
+  }
+  body{margin:0;padding:40px;background:var(--bg);font-family:"Segoe UI",sans-serif;color:var(--text);}
+  .wrap{max-width:560px;margin:0 auto;}
+  h1{color:var(--primary);margin:0 0 4px;font-size:26px;}
+  .sub{color:var(--muted);margin:0 0 22px;font-size:13px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 14px 34px rgba(10,102,194,0.08);}
+  label{display:block;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:16px;}
+  input[type=text], input[type=password], input[type=number], select, textarea {
+    width:100%;box-sizing:border-box;padding:10px 12px;margin-top:6px;border-radius:10px;
+    border:1px solid var(--line);background:#fbfdff;font-size:13px;color:var(--text);font-family:inherit;
+  }
+  textarea{resize:vertical;min-height:80px;}
+  input:focus, select:focus, textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(10,102,194,.12);}
+  .hint{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4;}
+  .row{display:flex;gap:10px;align-items:center;margin-top:22px;}
+  button{border:none;border-radius:10px;cursor:pointer;font-weight:700;padding:11px 16px;font-size:13px;}
+  .save{background:linear-gradient(135deg,#0a66c2,#0857a5);color:#fff;box-shadow:0 8px 18px rgba(10,102,194,.22);}
+  .save:hover{transform:translateY(-1px);}
+  #status{font-size:12px;color:var(--success);font-weight:700;}
+  .err{color:var(--danger) !important;}
+  .daily{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding:10px 12px;background:#eef5ff;border-radius:10px;font-size:12px;font-weight:700;color:var(--primary);}
+  a{color:var(--primary);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>RecruiterBOT — Settings</h1>
+  <p class="sub">Configure your Gemini key, invitation template and daily safety limit.</p>
+
+  <div class="card">
+    <label for="apiKey">Gemini API key</label>
+    <input id="apiKey" type="password" placeholder="AIza..." data-testid="options-api-key-input" autocomplete="off" />
+    <div class="hint">Get one at <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey</a>. Stored locally in <code>chrome.storage.local</code>.</div>
+
+    <label for="model">Model</label>
+    <select id="model" data-testid="options-model-select">
+      <option value="gemini-2.5-flash">gemini-2.5-flash (recommended)</option>
+      <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (cheaper)</option>
+    </select>
+
+    <label for="template">Invitation message template (max 300 chars)</label>
+    <textarea id="template" maxlength="300" data-testid="options-message-template"
+      placeholder="Hi {name}, I came across your profile..."></textarea>
+    <div class="hint"><code>{name}</code> / <code>{firstName}</code> will be replaced with the candidate's first name.</div>
+
+    <label for="dailyLimit">Daily connect limit</label>
+    <input id="dailyLimit" type="number" min="1" max="200" data-testid="options-daily-limit-input" />
+    <div class="hint">LinkedIn throttles aggressive outreach. Safe range: 20–80 per day.</div>
+
+    <label for="allowOutbound">Outbound sending</label>
+    <div class="row" style="margin-top:6px;">
+      <input id="allowOutbound" type="checkbox" data-testid="options-allow-outbound-checkbox" />
+      <span style="font-size:12px;color:var(--muted);">Enable opt-in outbound invites. By default RecruiterBOT stays in preparation-only mode.</span>
+    </div>
+
+    <div class="daily" data-testid="options-daily-counter">Today sent: <span id="todayCount">0</span></div>
+
+    <div class="row">
+      <button class="save" id="saveBtn" data-testid="options-save-btn">Save settings</button>
+      <span id="status"></span>
+    </div>
+  </div>
+</div>
+
+<script src="shared/debug.js"></script>
+<script src="shared/storage.js"></script>
+<script src="options.js"></script>
+</body>
+</html>

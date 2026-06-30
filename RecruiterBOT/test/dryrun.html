@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>RecruiterBOT — finalAction Dry Run</title>
+<style>
+  :root{
+    --primary:#0a66c2; --bg:#f4f7fb; --card:#fff; --line:#d8e3f2;
+    --muted:#5f6b7a; --text:#1f2933; --ok:#1e8e4a; --fail:#c43636; --warn:#b45309;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;padding:32px;background:var(--bg);font-family:"Segoe UI",sans-serif;color:var(--text);}
+  .wrap{max-width:960px;margin:0 auto;}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:18px;}
+  h1{color:var(--primary);margin:0;font-size:24px;}
+  .sub{color:var(--muted);font-size:13px;margin:0;}
+  .toolbar{display:flex;gap:10px;margin-bottom:18px;}
+  button{border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer;}
+  .btn-primary{background:linear-gradient(135deg,#0a66c2,#0857a5);color:#fff;box-shadow:0 6px 16px rgba(10,102,194,.2);}
+  .btn-primary:hover{transform:translateY(-1px);}
+  .btn-secondary{background:#eef5ff;color:var(--primary);border:1px solid #cfe0ff;}
+  .summary{padding:12px 16px;border-radius:12px;background:var(--card);border:1px solid var(--line);margin-bottom:16px;font-size:13px;display:flex;gap:18px;align-items:center;}
+  .summary .badge{padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px;}
+  .badge.ok{background:#e4f6ec;color:var(--ok);}
+  .badge.fail{background:#fde8e8;color:var(--fail);}
+  .badge.pending{background:#fff4e0;color:var(--warn);}
+  .grid{display:grid;grid-template-columns:1fr;gap:10px;}
+  .test{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 6px 14px rgba(10,102,194,.06);}
+  .test h3{margin:0 0 4px;font-size:15px;}
+  .test .desc{color:var(--muted);font-size:12px;margin-bottom:10px;}
+  .row{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:#334155;}
+  .row b{color:#0f172a;}
+  .state-ok{color:var(--ok);font-weight:700;}
+  .state-fail{color:var(--fail);font-weight:700;}
+  .state-pending{color:var(--warn);font-weight:700;}
+  .log{margin-top:8px;padding:8px 10px;background:#f8fafc;border-radius:8px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#475569;white-space:pre-wrap;}
+  #sandbox{position:fixed;left:-9999px;top:-9999px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>RecruiterBOT — <code>finalAction</code> Dry Run</h1>
+      <p class="sub">Unit tests the dialog automation against in-memory fake DOM nodes. No LinkedIn needed.</p>
+    </div>
+    <div class="toolbar">
+      <button id="runAllBtn" class="btn-primary" data-testid="dryrun-run-all">▶ Run all tests</button>
+      <button id="reloadBtn" class="btn-secondary" data-testid="dryrun-reload">↻ Reset</button>
+    </div>
+  </header>
+
+  <div class="summary" data-testid="dryrun-summary">
+    <span>Scenarios: <b id="totalCount">0</b></span>
+    <span class="badge ok"  data-testid="dryrun-pass-count">Passed 0</span>
+    <span class="badge fail" data-testid="dryrun-fail-count">Failed 0</span>
+    <span class="badge pending" data-testid="dryrun-pending-count">Pending 0</span>
+  </div>
+
+  <div id="results" class="grid" data-testid="dryrun-results"></div>
+</div>
+
+<!-- Hidden area where fake dialogs are attached to a real DOM so finalAction can query them. -->
+<div id="sandbox"></div>
+
+<!-- Load shared helpers and finalAction.  Content scripts are safe to load on an
+     extension page because they only mutate window.* without running any
+     LinkedIn-specific side effects (bootstrap.js is NOT loaded here). -->
+<script src="../shared/debug.js"></script>
+<script src="../shared/state.js"></script>
+<script src="../shared/dom.js"></script>
+<script src="../shared/storage.js"></script>
+<script>
+  // Shim: content/linkedin-profile.js uses RBProfileExtract during
+  // runProfileAutomation; finalAction itself does NOT — but the module
+  // references window.RBProfileExtract/window.RBStorage at bind time is safe.
+  // Provide a no-op shim to be defensive.
+  window.RBProfileExtract = window.RBProfileExtract || {
+      extractPayload: () => ({ name: "Test User" }),
+      extractAndStoreCurrentProfile: async () => null
+  };
+</script>
+<script src="../content/linkedin-profile.js"></script>
+<script src="dryrun.js"></script>
+</body>
+</html>

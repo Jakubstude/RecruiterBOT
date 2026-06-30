@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "RecruiterBOT",
+  "version": "3.0.0",
+  "description": "AI-powered sourcing: X-Ray Boolean via Gemini 2.5-flash, candidate scoring, and assisted LinkedIn outreach.",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://*.google.com/*",
+    "https://*.linkedin.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "RecruiterBOT"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.google.com/*",
+        "https://*.linkedin.com/*"
+      ],
+      "js": [
+        "shared/debug.js",
+        "shared/state.js",
+        "shared/dom.js",
+        "shared/storage.js",
+        "shared/gemini.js",
+        "shared/candidates.js",
+        "prompts.js",
+        "content/scoring.js",
+        "content/linkedin-profile-extract.js",
+        "content/google.js",
+        "content/linkedin-search.js",
+        "content/linkedin-profile.js",
+        "content/bootstrap.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
